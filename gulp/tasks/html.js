@@ -17,6 +17,9 @@
 
 'use strict';
 
-const gulp = require('./gulp')(['html', 'browserify']);
+import gulp from 'gulp';
 
-gulp.task('default', ['html', 'browserify']);
+module.exports = function() {
+	return gulp.src('source/**/*.html')
+		.pipe(gulp.dest('public'));
+};

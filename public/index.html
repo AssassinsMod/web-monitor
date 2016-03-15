@@ -3,10 +3,30 @@
 	<head>
 		<meta charset="utf-8">
 		<title>My Title</title>
+
+		<!-- 3rd party libraries -->
+		<script src="/socket.io/socket.io.js" charset="utf-8"></script>
+		<script src="http://code.jquery.com/jquery-2.2.1.min.js"></script>
+
+		<!-- scripts -->
 		<script src="index.js" charset="utf-8"></script>
+
+		<!-- style -->
+		<style>
+		* { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font: 13px Helvetica, Arial; }
+        #chat { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+        #chat input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+        #chat button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+        #messages { list-style-type: none; margin: 0; padding: 0; }
+        #messages li { padding: 5px 10px; }
+        #messages li:nth-child(odd) { background: #eee; }
+		</style>
 	</head>
 	<body>
 		<div>Empty body</div>
-		<div id="example"></div>
+		<div id="chatbox"></div>
+		<ul id="messages"></ul>
+		<input id="message" /><button id="chatSend">Send</button>
 	</body>
 </html>
