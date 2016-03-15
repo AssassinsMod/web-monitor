@@ -15,10 +15,33 @@
  *  along with PC-Monitor.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global $, io */
+
 'use strict';
 
 import * as rekt from './react.js';
+const socket = io();
 
-window.onload = function() {
+$(() => {
 	rekt.helloworld();
-};
+
+	$('#chatSend').on('click', () => {
+		socket.emit('message', {
+			sender: 'test client',
+			message: $('#message').val()
+		});
+
+		logMessage('me', $('#message').val());
+
+		$('#message').val('');
+		return false;
+	});
+});
+
+socket.on('message', (data) => {
+	logMessage(data.sender, data.message);
+});
+
+function logMessage(sender, message) {
+	$('#messages').append(`<li>${sender}: ${message}</li>`);
+}

@@ -19048,6 +19048,8 @@ module.exports = require('./lib/React');
  *  along with PC-Monitor.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global $, io */
+
 'use strict';
 
 var _react = require('./react.js');
@@ -19056,9 +19058,31 @@ var rekt = _interopRequireWildcard(_react);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-window.onload = function () {
+var socket = io();
+
+$(function () {
   rekt.helloworld();
-};
+
+  $('#chatSend').on('click', function () {
+    socket.emit('message', {
+      sender: 'test client',
+      message: $('#message').val()
+    });
+
+    logMessage('me', $('#message').val());
+
+    $('#message').val('');
+    return false;
+  });
+});
+
+socket.on('message', function (data) {
+  logMessage(data.sender, data.message);
+});
+
+function logMessage(sender, message) {
+  $('#messages').append('<li>' + sender + ': ' + message + '</li>');
+}
 
 },{"./react.js":160}],160:[function(require,module,exports){
 /*!
@@ -19078,12 +19102,12 @@ window.onload = function () {
  *  along with PC-Monitor.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* eslint no-unused-vars: [2, { "varsIgnorePattern": "Graph" }] */
+/* eslint no-unused-vars: 0 */
 
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
 exports.helloworld = helloworld;
 
@@ -19097,24 +19121,63 @@ var _reactDom2 = _interopRequireDefault(_reactDom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Graph = _react2.default.createClass({
-  displayName: 'Graph',
+var ChatInput = _react2.default.createClass({
+	displayName: 'ChatInput',
 
-  render: function render() {
-    return _react2.default.createElement(
-      'div',
-      { className: 'graph' },
-      'example content'
-    );
-  }
+	render: function render() {
+		return _react2.default.createElement(
+			'form',
+			{ className: 'chat-input' },
+			_react2.default.createElement('input', { type: 'text' }),
+			_react2.default.createElement(
+				'input',
+				{ type: 'submit' },
+				'Send'
+			)
+		);
+	}
+});
+
+var ChatMessage = _react2.default.createClass({
+	displayName: 'ChatMessage',
+
+	render: function render() {
+		return _react2.default.createElement(
+			'li',
+			{ className: 'chat-message' },
+			_react2.default.createElement(
+				'span',
+				{ className: 'chat-message-sender' },
+				undefined.props.author
+			),
+			_react2.default.createElement(
+				'span',
+				{ className: 'chat-message-content' },
+				undefined.props.message
+			)
+		);
+	}
+});
+
+var ChatBox = _react2.default.createClass({
+	displayName: 'ChatBox',
+
+	render: function render() {
+		return _react2.default.createElement(
+			'div',
+			{ className: 'chatbox' },
+			_react2.default.createElement(
+				'ul',
+				{ className: 'messages' },
+				_react2.default.createElement(ChatMessage, { author: 'test', message: 'asd123' })
+			),
+			_react2.default.createElement(ChatInput, null)
+		);
+	}
 });
 
 function helloworld() {
-  _reactDom2.default.render(
-  /* jshint ignore:start */
-  _react2.default.createElement(Graph, null),
-  /* jshint ignore:end */
-  document.getElementById('example'));
+	_reactDom2.default.render(_react2.default.createElement(ChatBox, null), document.getElementById('chatbox'));
 }
 
 },{"react":158,"react-dom":29}]},{},[159]);

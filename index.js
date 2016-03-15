@@ -1,4 +1,4 @@
-/*!
+	/*!
  *  This file is part of PC-Monitor.
  *
  *  PC-Monitor is free software: you can redistribute it and/or modify
@@ -15,41 +15,35 @@
  *  along with PC-Monitor.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* eslint no-console: 0 */
+/* eslint no-console: 0, no-unused-vars: 0 */
 
 'use strict';
 
 const express = require('express');
-const loki = require('lokijs');
+const    loki = require('lokijs');
 
-const api = express();
-const web = express();
+const     app = express();
+const  server = require('http').Server(app);
+const      io = require('socket.io')(server);
 
-const db = new loki('./data/database.json');
-let tests = db.addCollection('tests');
+const      db = new loki('./data/database.json');
 
-/* Front-end */
-web.listen(3030, () => {
-	web.use(express.static('public'));
-	console.info('Web Server running on *:3030');
+app.use(express.static('public'));
+
+io.on('connection', (socket) => {
+	socket.emit('news', { hello: 'world' });
+
+	socket.on('message', (data) => {
+		console.log(`${data.sender}: ${data.message}`);
+
+		socket.broadcast.emit('message', data);
+
+		if (data.message === 'hello') {
+			io.emit('message', { sender: 'server', message: 'hi' });
+		}
+	});
 });
 
-/* Back-end */
-const router = express.Router();
-
-router.get('/', (req, res) => {
-	console.info('Sending db');
-	res.json(tests.data);
+server.listen(3030, () => {
+	console.info('Listening on *:3030');
 });
-
-router.post('/:name', (req, res) => {
-	console.info(`Addind test "${req.params.name}"`);
-	tests.insert({ name: req.params.name });
-	res.json(tests.find({ name: req.params.name }));
-});
-
-
-
-
-api.use('/api', router);
-api.listen(3031);

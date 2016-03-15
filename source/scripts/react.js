@@ -15,26 +15,47 @@
  *  along with PC-Monitor.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* eslint no-unused-vars: [2, { "varsIgnorePattern": "Graph" }] */
+/* eslint no-unused-vars: 0 */
 
 'use strict';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-var Graph = React.createClass({
-	render: function() {
-		return (
-			<div className="graph">example content</div>
-		);
-	}
+let ChatInput = React.createClass({
+	render: () => (
+		<form className="chat-input">
+			<input type="text"></input>
+			<input type="submit">Send</input>
+		</form>
+	)
 });
+
+let ChatMessage = React.createClass({
+	render: () => (
+		<li className="chat-message">
+			<span className="chat-message-sender">{this.props.author}</span>
+			<span className="chat-message-content">{this.props.message}</span>
+		</li>
+	)
+});
+
+let ChatBox = React.createClass({
+	render: () => (
+		<div className="chatbox">
+			<ul className="messages">
+				<ChatMessage author="test" message="asd123" />
+			</ul>
+			<ChatInput />
+		</div>
+	)
+});
+
+
 
 export function helloworld() {
 	ReactDOM.render(
-		/* jshint ignore:start */
-		<Graph />,
-		/* jshint ignore:end */
-		document.getElementById('example')
+		<ChatBox />,
+		document.getElementById('chatbox')
 	);
 }
